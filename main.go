@@ -18,7 +18,7 @@ func main() {
 	engine.Reload(true)
 
 	app := fiber.New(fiber.Config{
-		Views: engine, 
+		Views: engine,
 	})
 
 	app.Static("/public/", "./public")

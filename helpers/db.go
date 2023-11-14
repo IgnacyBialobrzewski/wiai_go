@@ -26,7 +26,7 @@ func Establish() {
 
 func Migrate() {
 	bytes, err := os.ReadFile(migrationFile)
-	
+
 	if err != nil {
 		log.Fatalf("failed to read migrationFile: %s", err)
 	}

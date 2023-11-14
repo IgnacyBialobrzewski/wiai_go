@@ -8,7 +8,7 @@ import (
 )
 
 type User struct {
-	Id int64
+	Id       int64
 	Username string
 	Password string
 }
@@ -26,23 +26,15 @@ const queryLoadUser = `--sql
 `
 
 func CreateUser(db *sql.DB, username string, password string) (*User, error) {
-	stmt, err := db.Prepare(queryCreateUser)
-
-	if err != nil {
-		return nil, fmt.Errorf("failed to prepare stmt: %w", err)
-	}
-
-	defer stmt.Close()
-
 	h := sha256.New()
-	_, err = h.Write([]byte(password))
-	
+	_, err := h.Write([]byte(password))
+
 	if err != nil {
 		return nil, fmt.Errorf("failed to hash password: %w", err)
 	}
 
 	hashedPassword := fmt.Sprintf("%x", h.Sum(nil))
-	result, err := stmt.Exec(username, hashedPassword)
+	result, err := db.Exec(queryCreateUser, username, hashedPassword)
 
 	if err != nil {
 		return nil, fmt.Errorf("failed to execute stmt: %w", err)
@@ -59,7 +51,7 @@ func CreateUser(db *sql.DB, username string, password string) (*User, error) {
 	}
 
 	userId, err := result.LastInsertId()
-	
+
 	if err != nil {
 		return nil, fmt.Errorf("failed to get inserted id: %w", err)
 	}
@@ -68,17 +60,9 @@ func CreateUser(db *sql.DB, username string, password string) (*User, error) {
 }
 
 func LoadUser(db *sql.DB, username string, password string) (*User, error) {
-	stmt, err := db.Prepare(queryLoadUser)
-
-	if err != nil {
-		return nil, fmt.Errorf("failed to prepare stmt: %w", err)
-	}
-
-	defer stmt.Close()
-
 	h := sha256.New()
-	_, err = h.Write([]byte(password))
-	
+	_, err := h.Write([]byte(password))
+
 	if err != nil {
 		return nil, fmt.Errorf("failed to hash password: %w", err)
 	}
@@ -86,8 +70,8 @@ func LoadUser(db *sql.DB, username string, password string) (*User, error) {
 	hashedPassword := fmt.Sprintf("%x", h.Sum(nil))
 
 	var user User
-	err = stmt.
-		QueryRow(username, hashedPassword).
+	err = db.
+		QueryRow(queryLoadUser, username, hashedPassword).
 		Scan(&user.Id, &user.Username, &user.Password)
 
 	if err != nil {
@@ -97,6 +81,6 @@ func LoadUser(db *sql.DB, username string, password string) (*User, error) {
 
 		return nil, fmt.Errorf("failed to copy row to struct: %w", err)
 	}
-	
+
 	return &user, nil
 }
