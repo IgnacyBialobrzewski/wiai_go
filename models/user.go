@@ -13,7 +13,7 @@ type User struct {
 	Password string
 }
 
-var ErrUserAlreadyExists error = errors.New("user already exists")
+var ErrUserAlreadyExists = errors.New("user already exists")
 var ErrInvalidCredentials = errors.New("invalid credentials")
 
 const queryCreateUser = `--sql
