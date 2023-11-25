@@ -26,14 +26,7 @@ const queryLoadUser = `--sql
 `
 
 func CreateUser(db *sql.DB, username string, password string) (*User, error) {
-	h := sha256.New()
-	_, err := h.Write([]byte(password))
-
-	if err != nil {
-		return nil, fmt.Errorf("failed to hash password: %w", err)
-	}
-
-	hashedPassword := fmt.Sprintf("%x", h.Sum(nil))
+	hashedPassword := fmt.Sprintf("%x", sha256.Sum256([]byte(password)))
 	result, err := db.Exec(queryCreateUser, username, hashedPassword)
 
 	if err != nil {
@@ -60,17 +53,10 @@ func CreateUser(db *sql.DB, username string, password string) (*User, error) {
 }
 
 func LoadUser(db *sql.DB, username string, password string) (*User, error) {
-	h := sha256.New()
-	_, err := h.Write([]byte(password))
-
-	if err != nil {
-		return nil, fmt.Errorf("failed to hash password: %w", err)
-	}
-
-	hashedPassword := fmt.Sprintf("%x", h.Sum(nil))
+	hashedPassword := fmt.Sprintf("%x", sha256.Sum256([]byte(password)))
 
 	var user User
-	err = db.
+	err := db.
 		QueryRow(queryLoadUser, username, hashedPassword).
 		Scan(&user.Id, &user.Username, &user.Password)
 

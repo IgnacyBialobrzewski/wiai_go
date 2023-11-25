@@ -13,6 +13,9 @@
 		<ul>
 			<li><a href="/login">Login</a></li>
 			<li><a href="/register">Register</a></li>
+			<li hx-delete="/sessions" hx-swap="delete">
+				<button>Logout</button>
+			</li>
 		</ul>
 		{{embed}}
 	</body>

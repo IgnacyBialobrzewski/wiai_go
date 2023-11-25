@@ -21,12 +21,12 @@ func main() {
 		Views: engine,
 	})
 
-	app.Static("/public/", "./public")
-
 	controllers.Index(app)
 	controllers.Login(app)
 	controllers.Register(app)
-	controllers.User(app)
+	controllers.Users(app)
+	controllers.Sessions(app)
 
+	app.Static("/public/", "./public")
 	app.Listen("127.0.0.1:3000")
 }

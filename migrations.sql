@@ -3,3 +3,9 @@ CREATE TABLE IF NOT EXISTS users (
     Username VARCHAR(30) UNIQUE,
     Password TEXT
 );
+CREATE TABLE IF NOT EXISTS sessions (
+    Id INTEGER PRIMARY KEY AUTOINCREMENT,
+    Key TEXT,
+    UserId INTEGER,
+    FOREIGN KEY (UserId) REFERENCES users(Id)
+);
