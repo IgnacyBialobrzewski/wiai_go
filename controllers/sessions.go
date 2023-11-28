@@ -18,16 +18,15 @@ func Sessions(a *fiber.App) {
 }
 
 func deleteSession(c *fiber.Ctx) error {
-	sessionKey := c.Cookies(sessionCookieKey)
-	err := models.DeleteSession(helpers.Db, sessionKey)
+	session := models.Session{Key: c.Cookies(sessionCookieKey)}
 
-	if sessionKey == "" {
+	if session.Key == "" {
 		return c.SendStatus(http.StatusUnauthorized)
 	}
 
 	c.ClearCookie(sessionCookieKey)
 
-	if err != nil {
+	if session.Delete(helpers.Db) != nil {
 		return c.Status(http.StatusInternalServerError).SendString("Couldn't log out!")
 	}
 

@@ -39,9 +39,9 @@ func CreateSession(db *sql.DB, user *User) (*Session, error) {
 	return &Session{sessionId, sessionKey, user.Id}, nil
 }
 
-func DeleteSession(db *sql.DB, sessionKey string) error {
-	_, err := db.Exec(queryDeleteSession, sessionKey)
-	
+func (s *Session) Delete(db *sql.DB) error {
+	_, err := db.Exec(queryDeleteSession, s.Key)
+
 	if err != nil {
 		return fmt.Errorf("failed to delete session row: %w", err)
 	}
